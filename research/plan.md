@@ -111,5 +111,5 @@ LLM judges and their calibration (start with gpt-6-luna), simulated users, cross
 
 ## Progress
 
-- **Phase 0:** done locally (`d08457c`). Not finished until the GitHub repo exists and the first PR run is green.
+- **Phase 0:** done. Pushed to github.com/Deep-UA/Weather-agent; the PR workflow is green on `7316d70` (about 40 s). Actions are pinned to release commit SHAs.
 - **Phase 1:** `weather_core` done: Open-Meteo geocoding, forecast and archive behind `WeatherProvider`; typed errors; bounded retries on timeouts and 5xx only; TTL cache with stale-on-error for 429s and outages. Tests use real captured Open-Meteo responses.
