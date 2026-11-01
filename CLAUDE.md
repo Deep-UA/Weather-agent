@@ -9,7 +9,9 @@
 ## Commands
 
 - Install: `uv sync`
-- PR-tier checks (what CI runs): `uv run ruff format --check . && uv run ruff check . && uv run mypy && uv run pytest -m "not llm and not live and not smoke"`
+- PR-tier checks (what CI runs): `uv run ruff format --check . && uv run ruff check . && uv run mypy && uv run pytest` (the default `-m` already excludes `llm`, `live` and `smoke`)
+- Live Open-Meteo checks, by hand: `uv run pytest -m live`
+- Run the tools without the agent: `uv run weather search|forecast|place ...` (see README); `--json` prints exactly what the agent's tool returns
 
 ## Rules
 
@@ -17,7 +19,8 @@
 - The whole HTTP stack is `httpx2`, not `httpx`, so respx can't see it. Mock HTTP with the `mock_http` fixture (`tests/support/mock_http.py`) and pass its `client()` in: `build_model(http_client=...)`, `OpenMeteoProvider(client)`. Fixtures under `tests/fixtures/` are real captured responses; see their README.
 - `weather_core` raises only `WeatherError` subclasses, each with a message the agent can act on. Retry only timeouts, connection errors and 5xx; never retry a 429.
 - This folder is in iCloud-synced `~/Documents`. The virtualenv lives in `.venv.nosync/` (iCloud skips `*.nosync`) with `.venv` as a symlink; never recreate a plain `.venv` directory here.
-- Tests run with `--block-network` and `ALLOW_MODEL_REQUESTS = False`; a test that needs the network belongs under the `live` or `llm` marker.
+- An autouse fixture in `tests/conftest.py` blocks the network for every test not marked `live`, `llm` or `smoke`, and `ALLOW_MODEL_REQUESTS = False` blocks real model calls.
+- Agent tools wrap `weather_core.tools` one-to-one (`geo_search_location`, `weather_get_forecast`); put tool logic there, not in the agent, so the CLI and tests can run it without a model.
 
 ## Skills for this project
 

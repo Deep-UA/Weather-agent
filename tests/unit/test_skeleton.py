@@ -12,7 +12,7 @@ def test_package_imports(package: str) -> None:
 
 
 def test_outbound_network_is_blocked() -> None:
-    # `--block-network` is in the default pytest options, so a stray socket fails the test run.
+    # The autouse `_block_network` fixture in tests/conftest.py makes a stray socket fail the test.
     with (
         socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock,
         pytest.raises(RuntimeError, match="Network is disabled"),

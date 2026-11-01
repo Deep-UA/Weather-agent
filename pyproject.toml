@@ -11,6 +11,9 @@ dependencies = [
     "tzdata>=2025.2",
 ]
 
+[project.scripts]
+weather = "weather_core.cli:main"
+
 [build-system]
 requires = ["uv_build>=0.11.16,<0.12.0"]
 build-backend = "uv_build"
@@ -31,7 +34,9 @@ dev = [
 testpaths = ["tests"]
 # Lets tests import helpers as `tests.support...`.
 pythonpath = ["."]
-addopts = ["--import-mode=importlib", "--strict-markers", "--strict-config", "--block-network", "-ra"]
+# The default run is the zero-token PR tier; `-m live` (or `llm`, `smoke`) on the command line overrides it.
+# Network access is blocked by an autouse fixture in tests/conftest.py, except for those three markers.
+addopts = ["--import-mode=importlib", "--strict-markers", "--strict-config", "-ra", "-m", "not llm and not live and not smoke"]
 filterwarnings = ["error"]
 markers = [
     "unit: pure functions and wiring, no I/O",

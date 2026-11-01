@@ -112,4 +112,4 @@ LLM judges and their calibration (start with gpt-6-luna), simulated users, cross
 ## Progress
 
 - **Phase 0:** done. Pushed to github.com/Deep-UA/Weather-agent; the PR workflow is green on `7316d70` (about 40 s). Actions are pinned to release commit SHAs.
-- **Phase 1:** `weather_core` done: Open-Meteo geocoding, forecast and archive behind `WeatherProvider`; typed errors; bounded retries on timeouts and 5xx only; TTL cache with stale-on-error for 429s and outages. Tests use real captured Open-Meteo responses.
+- **Phase 1:** done. `weather_core`: Open-Meteo geocoding, forecast and archive behind `WeatherProvider`; typed errors; bounded retries on timeouts and 5xx only; TTL cache with stale-on-error for 429s and outages. `weather_core.tools` holds the two tool functions the agent will wrap (`geo_search_location` with a deterministic ambiguity rule, `weather_get_forecast`), runnable by hand through the `weather` CLI. Mocked tests use real captured responses; `uv run pytest -m live` runs 12 checks against the real API.
