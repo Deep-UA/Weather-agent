@@ -1,0 +1,56 @@
+[project]
+name = "weather-agent"
+version = "0.1.0"
+description = "A tested weather agent: PydanticAI on Claude Haiku 5.5 with Open-Meteo data."
+authors = [
+    { email = "dmitriy.popovych@gmail.com" }
+]
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "pydantic-ai-slim[anthropic]>=2.64,<3",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.16,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = ["weather_core", "weather_agent", "weather_api"]
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4,<3",
+    "pytest>=9.2,<10",
+    "pytest-recording>=0.14,<0.15",
+    "ruff>=0.17,<0.18",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["--import-mode=importlib", "--strict-markers", "--strict-config", "--block-network", "-ra"]
+filterwarnings = ["error"]
+markers = [
+    "unit: pure functions and wiring, no I/O",
+    "api: FastAPI app tested in-process",
+    "ui: Playwright tests of the chat page",
+    "security: deterministic security and cost guards",
+    "llm: calls a real model (nightly and weekly only)",
+    "live: calls a real third-party API (nightly drift job only)",
+    "smoke: runs against a deployed URL (post-deploy only)",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+# Vendored skill files are not project code.
+extend-exclude = [".claude"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "PT", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]
+
+[tool.mypy]
+strict = true
+files = ["src", "tests"]
