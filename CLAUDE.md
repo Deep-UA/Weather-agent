@@ -14,7 +14,9 @@
 ## Rules
 
 - Never send `temperature`, `top_p` or `top_k` to Claude; `tests/security/test_model_request.py` guards this.
-- The Anthropic SDK and PydanticAI use `httpx2`, not `httpx`. Mock their traffic with an `httpx2.MockTransport` passed through `build_model(http_client=...)`.
+- The whole HTTP stack is `httpx2`, not `httpx`, so respx can't see it. Mock HTTP with the `mock_http` fixture (`tests/support/mock_http.py`) and pass its `client()` in: `build_model(http_client=...)`, `OpenMeteoProvider(client)`. Fixtures under `tests/fixtures/` are real captured responses; see their README.
+- `weather_core` raises only `WeatherError` subclasses, each with a message the agent can act on. Retry only timeouts, connection errors and 5xx; never retry a 429.
+- This folder is in iCloud-synced `~/Documents`. The virtualenv lives in `.venv.nosync/` (iCloud skips `*.nosync`) with `.venv` as a symlink; never recreate a plain `.venv` directory here.
 - Tests run with `--block-network` and `ALLOW_MODEL_REQUESTS = False`; a test that needs the network belongs under the `live` or `llm` marker.
 
 ## Skills for this project

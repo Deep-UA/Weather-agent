@@ -8,6 +8,7 @@ authors = [
 requires-python = ">=3.13,<3.14"
 dependencies = [
     "pydantic-ai-slim[anthropic]>=2.64,<3",
+    "tzdata>=2025.2",
 ]
 
 [build-system]
@@ -23,10 +24,13 @@ dev = [
     "pytest>=9.2,<10",
     "pytest-recording>=0.14,<0.15",
     "ruff>=0.17,<0.18",
+    "time-machine>=3.6,<4",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Lets tests import helpers as `tests.support...`.
+pythonpath = ["."]
 addopts = ["--import-mode=importlib", "--strict-markers", "--strict-config", "--block-network", "-ra"]
 filterwarnings = ["error"]
 markers = [
@@ -54,3 +58,5 @@ select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "PT", "S"]
 [tool.mypy]
 strict = true
 files = ["src", "tests"]
+mypy_path = ["src", "."]
+explicit_package_bases = true

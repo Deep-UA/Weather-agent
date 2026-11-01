@@ -103,3 +103,13 @@ LLM judges and their calibration (start with gpt-6-luna), simulated users, cross
 ## Still to decide when the phase arrives
 
 - Infrastructure-as-code tool for phase 4 (SAM or CDK).
+
+## Changes during the build
+
+- **Phase 1, test stack (Q14):** respx replaced by `tests/support/mock_http.py`, a small route-matching mock on `httpx2.MockTransport`. The Anthropic SDK 2.x, PydanticAI 2.64 and `weather_core` all use `httpx2`, and respx only patches `httpx`. The mock keeps respx's two guarantees: unmatched requests fail, and uncalled routes fail at teardown. vcrpy 9.4 supports `httpx2` natively, so phase 2 cassettes stay on pytest-recording.
+- **Phase 1, scope:** the nightly drift job stays in phase 5a, as the v1 build plan says.
+
+## Progress
+
+- **Phase 0:** done locally (`d08457c`). Not finished until the GitHub repo exists and the first PR run is green.
+- **Phase 1:** `weather_core` done: Open-Meteo geocoding, forecast and archive behind `WeatherProvider`; typed errors; bounded retries on timeouts and 5xx only; TTL cache with stale-on-error for 429s and outages. Tests use real captured Open-Meteo responses.
